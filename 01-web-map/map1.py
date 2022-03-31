@@ -6,16 +6,20 @@ import pandas as pd
 
 
 volcanoes = pd.read_csv("volcanoes.txt");
-
-volcano_locations = volcanoes[["LAT", "LON", "ELEV"]]
-
+volcano_locations = volcanoes[["NAME", "LAT", "LON", "ELEV"]]
 map1 = folium.Map()
 fg = folium.FeatureGroup(name='My Home Map')
 
+html = """
+<h3>Volcano Info:</h4>
+Name: {0}
+<br />
+Elevation: {1} m
+"""
 
-for lat, lon, elev in volcano_locations.values.tolist():
-    # print(, vol2)
-    fg.add_child(folium.Marker(location=(lat, lon), popup=elev, icon=folium.Icon(color='red')))
+for name, lat, lon, elev in volcano_locations.values.tolist():
+    iframe = folium.IFrame(html=html.format(name, str(elev)), width=200, height=100)
+    fg.add_child(folium.Marker(location=(lat, lon), popup=folium.Popup(iframe), icon=folium.Icon(color='red')))
 
 
 map1.add_child(fg)
